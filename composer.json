@@ -1,0 +1,26 @@
+{
+  "name": "ems/packaging",
+  "type": "library",
+  "description": "Helpers for local package development",
+  "keywords": ["packages","laravel"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michael Tils",
+      "email": "mtils@web-utils.de",
+      "homepage": "http://web-utils.de"
+    }
+   ],
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "require-dev": {
+    "mockery/mockery": "~0.9"
+  },
+  "autoload": {
+    "psr-0": {
+      "Packaging": "src/"
+    }
+  },
+  "minimum-stability": "dev"
+}
