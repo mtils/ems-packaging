@@ -2,7 +2,7 @@
 This is a small helper package to help you while developing laravel applications and packages.
 
 ## Install
-### 1. Add this to your composer:
+### 1. Add this to your composer.json:
 ```json
 {
     "require-dev": {
