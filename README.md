@@ -20,7 +20,7 @@ $env = $app->detectEnvironment(function()
 
 $providerBootstrap = 'Illuminate\Foundation\Bootstrap\RegisterProviders';
 
-$app->afterBootstrapping($providerBootstrap, function($app){
+$app->beforeBootstrapping($providerBootstrap, function($app){
 
     if ($app->isLocal() && class_exists('Packaging\DevServiceProvider')) {
         $app->register('Packaging\DevServiceProvider');
