@@ -32,8 +32,6 @@ $app->afterBootstrapping($providerBootstrap, function($app){
 ```php
 <?php
 
-$basePath = '/home/michi/Dokumente/IT/Kdevelop/web-utils-libs/';
-
 return [
 
     'providers' => [
