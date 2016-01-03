@@ -180,11 +180,14 @@ class AutoLoader
             }
         }
 
+        if (count($matches) < 2) {
+            return $matches;
+        }
+
         // Sort by the length of the assigned namespace to get the matching path
         // with the most explicit namespace
-
         uksort($matches, function($a, $b){
-            if (strlen($a) > strlen($b)) {
+            if (strlen($a) < strlen($b)) {
                 return 1;
             }
             return -1;
