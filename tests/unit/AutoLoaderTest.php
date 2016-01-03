@@ -54,7 +54,6 @@ class AutoLoaderTest extends PHPUnit_Framework_TestCase
         $loader = $this->newLoader();
 
         $loader->addNamespace('FakeLib', $libDir);
-        $fileName = realpath($libDir).'/FakeLib/Loader.php';
         $testClass = 'FakeLib\Loader';
 
         $loader->autoload($testClass);
@@ -68,7 +67,6 @@ class AutoLoaderTest extends PHPUnit_Framework_TestCase
         $loader = $this->newLoader();
 
         $loader->addNamespace('FakeLib', $libDir);
-        $fileName = realpath($libDir).'/FakeLib/Faker/Factory.php';
         $testClass = 'FakeLib\Faker\Factory';
 
         $loader->autoload($testClass);
@@ -84,13 +82,62 @@ class AutoLoaderTest extends PHPUnit_Framework_TestCase
 
         $loader->addNamespace('FakeLib', $libDir);
         $loader->addNamespace('SecondLib\Types', $lib2Dir);
-        $fileName = realpath($libDir).'/FakeLib/Faker/Factory.php';
-        $testClass = 'FakeLib\Faker\Factory';
-        $fileName2 = realpath($libDir).'/Types/AbstractType.php';
         $testClass2 = 'SecondLib\Types\AbstractType';
 
         $loader->autoload($testClass2);
         $this->assertTrue(class_exists($testClass2));
+    }
+
+    public function testAutoloadLoadsMostMatchingNamespaces()
+    {
+        $libDir = $this->fakeLibDir();
+        $lib2Dir = $this->secondLibDir();
+        $loader = $this->newLoader();
+
+
+        $loader->addNamespace('FakeLib\SecondNamespace', $libDir);
+        $loader->addNamespace('FakeLib', $libDir);
+
+        $loader->addNamespace('SecondLib\Types', $lib2Dir);
+
+        $testClass = 'FakeLib\Faker\Factory2';
+        $testClass2 = 'SecondLib\Types\AbstractType2';
+        $testClass3 = 'FakeLib\SecondNamespace\Example';
+
+        $loader->autoload($testClass);
+        $this->assertTrue(class_exists($testClass, false));
+
+        $loader->autoload($testClass2);
+        $this->assertTrue(class_exists($testClass2, false));
+
+        $loader->autoload($testClass3);
+        $this->assertTrue(class_exists($testClass3, false));
+    }
+
+    public function testAutoloadLoadsMostMatchingNamespacesInOppositeSequence()
+    {
+        $libDir = $this->fakeLibDir();
+        $lib2Dir = $this->secondLibDir();
+        $loader = $this->newLoader();
+
+
+        $loader->addNamespace('FakeLib', $libDir);
+        $loader->addNamespace('FakeLib\SecondNamespace', $libDir);
+
+        $loader->addNamespace('SecondLib\Types', $lib2Dir);
+
+        $testClass = 'FakeLib\Faker\Factory3';
+        $testClass2 = 'SecondLib\Types\AbstractType3';
+        $testClass3 = 'FakeLib\SecondNamespace\Example2';
+
+        $loader->autoload($testClass);
+        $this->assertTrue(class_exists($testClass, false));
+
+        $loader->autoload($testClass2);
+        $this->assertTrue(class_exists($testClass2, false));
+
+        $loader->autoload($testClass3);
+        $this->assertTrue(class_exists($testClass3, false));
     }
 
     protected function newLoader()

@@ -116,11 +116,7 @@ class AutoLoader
      **/
     protected function findFileOfClass($class)
     {
-        foreach ($this->ns2Dir as $ns=>$dir) {
-
-            if (strpos($class, $ns) !== 0) {
-                continue;
-            }
+        foreach ($this->namespaceDirsMatching($class) as $ns=>$dir) {
 
             $trimmedClass = trim(substr($class, strlen($ns)),'\\');
             $nsParts = explode('\\', $ns);
@@ -171,6 +167,31 @@ class AutoLoader
     {
         $sep = DIRECTORY_SEPARATOR;
         return $sep . trim(realpath($directory),$sep) . $sep;
+    }
+
+    protected function namespaceDirsMatching($class)
+    {
+        $matches = [];
+
+        foreach ($this->ns2Dir as $ns=>$dir) {
+
+            if (strpos($class, $ns) === 0) {
+                $matches[$ns] = $dir;
+            }
+        }
+
+        // Sort by the length of the assigned namespace to get the matching path
+        // with the most explicit namespace
+
+        uksort($matches, function($a, $b){
+            if (strlen($a) > strlen($b)) {
+                return 1;
+            }
+            return -1;
+        });
+
+        return $matches;
+
     }
 
 }
