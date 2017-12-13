@@ -10,25 +10,28 @@ This is a small helper package to help you while developing laravel applications
     }
 }
 ```
-### 2. Then on Laravel 5 add this to your bootstrap/app.php:
+### 2. Then on Laravel in your app.php on the top:
 
 ```php
-$env = $app->detectEnvironment(function()
-{
-    return getenv('APP_ENV') ?: 'production';
-});
 
-$providerBootstrap = 'Illuminate\Foundation\Bootstrap\RegisterProviders';
+use Packaging\Environment;
 
-$app->beforeBootstrapping($providerBootstrap, function($app){
+$usePackaging = Environment::init();
 
-    if ($app->isLocal() && class_exists('Packaging\DevServiceProvider')) {
-        $app->register('Packaging\DevServiceProvider');
-    }
-
-});
 ```
-### 3. Add a develop configuration file (config/develop.php) with the following content:
+It returns true if it found a configuration.
+
+### 3. Let the environment configure your application
+
+```php
+<?php
+
+Environment::configure($app);
+
+```
+In this step it just adds some Development ServiceProviders (if configured).
+
+### 4. Add a develop configuration file (config/develop.php) with the following content:
 ```php
 <?php
 
@@ -49,5 +52,5 @@ return [
 This is just a sample. Under "providers" you can add any custom service providers for development. The part under "package-overwrites" is to load your custom packages from anywhere on your hdd without changing your composer.json.
 Package overloading is realized with a simple autoloader which will prepended to the spl autoload stack.
 
-The DevServiceProvider will exit if the environment is not local and no config.develop configuration was found.
+If no develop.php file is found it will exist and does nothing.
 
