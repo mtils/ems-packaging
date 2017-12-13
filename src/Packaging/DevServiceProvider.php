@@ -1,13 +1,14 @@
 <?php namespace Packaging;
 
-use Log;
-
 use Illuminate\Support\ServiceProvider;
 
 /**
  * This class looks for configurations in config/develop.php
  * Currently it can load custom providers and overwrite package
- * paths via an autoloader
+ * paths via an autoloader.
+ *
+ * @deprecated Use Environment class instead of this ServiceProvider
+ *
  **/
 class DevServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,11 @@ class DevServiceProvider extends ServiceProvider
         }
 
         if (!$this->checkInstallation()) {
+            return;
+        }
+
+        //Check if the new class is used
+        if (Environment::isActive()) {
             return;
         }
 
@@ -95,7 +101,7 @@ class DevServiceProvider extends ServiceProvider
             return true;
         }
 
-        Log::warning('DevServiceProvider couldnt find config config/develop.php. Disabling');
+        $this->app['log']->warning('DevServiceProvider could not find config config/develop.php. Disabling');
         return false;
 
     }

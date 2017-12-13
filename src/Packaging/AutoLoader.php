@@ -1,4 +1,7 @@
-<?php namespace Packaging;;
+<?php
+
+namespace Packaging;
+
 
 /**
  * This is a simple loader. Add a directory and it will load th class. It is
@@ -17,7 +20,7 @@ class AutoLoader
     /**
      * @var bool
      **/
-    private $registered = false;
+    private static $registered = false;
 
     public function __construct(array $ns2Dir = [])
     {
@@ -54,13 +57,12 @@ class AutoLoader
      * The actual autoload method
      *
      * @param string $class
-     * @return bool
      **/
     public function autoload($class)
     {
         if ($file = $this->resolveFile($class)) {
             if (file_exists($file)) {
-                return include($file);
+                include($file);
             }
         }
     }
@@ -91,11 +93,21 @@ class AutoLoader
      **/
     public function register()
     {
-        if ($this->registered) {
+        if (self::$registered) {
             return;
         }
         $this->registerBefore();
-        $this->registered = true;
+        self::$registered = true;
+    }
+
+    /**
+     * Find out if the autoloader did register itself.
+     *
+     * @return bool
+     **/
+    public static function isRegistered()
+    {
+        return static::$registered;
     }
 
     /**
@@ -124,6 +136,9 @@ class AutoLoader
             return $this->classToFilename($trimmedClass, "$dir$last/");
 
         }
+
+        return '';
+
     }
 
     /**
